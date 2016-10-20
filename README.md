@@ -100,6 +100,20 @@ hifetch({
   dataType: 'multipart/form-data',
 ```
 
+### Options
+
+* `url`
+* `method` - default: `'get'`
+* `query` - plain object
+* `data` - plain object, FormData object or string
+* `dataType` - default: `'application/x-www-form-urlencoded'`
+* `parser` - default: `response => response.json()`
+* `responseType` - default: `'application/json'`
+* `timeout` - millisecond
+* `handler`
+* `success`
+* `error`
+
 ### Error results
 
 ```javascript
@@ -121,7 +135,7 @@ Error code:
 * 5 - [TIMEOUT ERROR]
 * 6 - [MANUAL ERROR]
 
-See [errors.spec.js]() for more detail.
+See [errors.spec.js](https://github.com/dexteryy/hifetch/blob/master/tests/errors.spec.js) for more detail.
 
 ### Actions
 
@@ -129,7 +143,7 @@ See [errors.spec.js]() for more detail.
 * `cancel()` - interrupt latest outstanding request, nothing happen
 * `error()` - interrupt latest outstanding request, trigger error callback
 
-See [actions.spec.js]() for more detail.
+See [actions.spec.js](https://github.com/dexteryy/hifetch/blob/master/tests/actions.spec.js) for more detail.
 
 ## Development
 
