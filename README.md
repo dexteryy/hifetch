@@ -22,15 +22,15 @@ hifetch({
     mobile: true,
   },
   timeout: 10000,
-  handler: res => {
+  handler(res) {
     return res;
   },
-  success: res => {
+  success(res) {
     console.log('success!', res.status);
     // 0
     return res;
   },
-  error: res => {
+  error(res) {
     console.log('error!', res.message);
     console.log('error code:', res.status);
     // 1 / 2 / 3 / 4 / 5 / 6, see "Error results"
@@ -119,11 +119,13 @@ hifetch({
 ```javascript
 hifetch({
   // ...
-  error: ({
+  error({
     status, // error code
     message, // error log
     ...other, // more info
-  }) => {
+  }) {
+    // ...
+  },
 ```
 
 Error code:

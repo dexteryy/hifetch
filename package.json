@@ -1,6 +1,6 @@
 {
   "name": "hifetch",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A minimal higher-level wrapper around Fetch API",
   "author": "dexteryy <dexter.yy@gmail.com>",
   "contributors": [],
@@ -9,7 +9,7 @@
   },
   "repository": "https://github.com/dexteryy/hifetch",
   "license": "MIT",
-  "main": "build/index.js",
+  "main": "build/dist/index.js",
   "scripts": {
     "prepublish": "npm run lint && npm run build",
     "lint": "eslint src/**",
