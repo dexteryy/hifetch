@@ -21,8 +21,14 @@ hifetch({
   query: {
     mobile: true,
   },
+  headers: { // custom headers
+    'Authorization': `Bearer ${jwtToken}`,
+  },
   timeout: 10000,
-  handler(res) {
+  handler(res) { // custom validator and processor
+    if (!res[myExpectedData]) {
+      throw new Error(`NO ${myExpectedData}!`);
+    }
     return res;
   },
   success(res) {
@@ -106,11 +112,12 @@ hifetch({
 * `method` - default: `'get'`
 * `query` - plain object
 * `data` - plain object, FormData object or string
-* `dataType` - default: `'application/x-www-form-urlencoded'`
+* `dataType` - custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
+* `responseType` - custom `'Accept'` header, default: `'application/json'`
+* `headers` - other custom headers
 * `parser` - default: `response => response.json()`
-* `responseType` - default: `'application/json'`
 * `timeout` - millisecond
-* `handler`
+* `handler` - custom validator and processor
 * `success`
 * `error`
 

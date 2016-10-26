@@ -11,6 +11,7 @@ class Hifetch {
     query: null,
     data: '',
     dataType: 'application/x-www-form-urlencoded',
+    headers: {},
     parser(response) {
       return response.json();
     },
@@ -29,6 +30,7 @@ class Hifetch {
       responseType,
       dataType,
       data,
+      headers,
     } = this._config;
     const validMethod = method.toLowerCase();
     if (validMethod === 'post') {
@@ -42,17 +44,17 @@ class Hifetch {
       }
       this._fetchOpt = {
         method: 'POST',
-        headers: {
+        headers: Object.assign({}, headers, {
           Accept: responseType,
           'Content-Type': dataType,
-        },
+        }),
         body: dataString || data,
       };
     } else {
       this._fetchOpt = {
-        headers: {
+        headers: Object.assign({}, headers, {
           Accept: responseType,
-        },
+        }),
       };
     }
     this._queryString = query ? qs.stringify(query) : '';

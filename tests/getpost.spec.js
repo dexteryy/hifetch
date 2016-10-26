@@ -12,8 +12,11 @@ import {
 describe('get/post', function () {
 
   it('get user1', function (done) {
-    nock(ROOT)
-      .get('/user')
+    nock(ROOT, {
+      reqheaders: {
+        'X-My-Headers': '1'
+      },
+    }).get('/user')
       .query({
         uid: 1,
       })
@@ -25,6 +28,9 @@ describe('get/post', function () {
       query: {
         uid: 1,
       },
+      headers: {
+        'X-My-Headers': '1'
+      },
       success(res) {
         expect(res.name).to.be.equal('user1');
         return res;
@@ -35,8 +41,11 @@ describe('get/post', function () {
   });
 
   it('get user2', function (done) {
-    nock(ROOT)
-      .get('/user')
+    nock(ROOT, {
+      reqheaders: {
+        'X-My-Headers': '1'
+      },
+    }).get('/user')
       .query({
         uid: 2,
       })
@@ -48,6 +57,9 @@ describe('get/post', function () {
       query: {
         uid: 2,
       },
+      headers: {
+        'X-My-Headers': '1'
+      },
       success(res) {
         expect(res.name).to.be.equal('user2');
         return res;
@@ -58,8 +70,11 @@ describe('get/post', function () {
   });
 
   it('post user3 by urlencoded', function (done) {
-    nock(ROOT)
-      .post('/user')
+    nock(ROOT, {
+      reqheaders: {
+        'X-My-Headers': '1'
+      },
+    }).post('/user')
       .query({
         uid: 3,
       })
@@ -73,6 +88,9 @@ describe('get/post', function () {
       method: 'post',
       query: {
         uid: 3,
+      },
+      headers: {
+        'X-My-Headers': '1'
       },
       data: {
         name: 'user3',
@@ -88,8 +106,11 @@ describe('get/post', function () {
   });
 
   it('post user4 by JSON', function (done) {
-    nock(ROOT)
-      .post('/user')
+    nock(ROOT, {
+      reqheaders: {
+        'X-My-Headers': '1'
+      },
+    }).post('/user')
       .query({
         uid: 4,
       })
@@ -103,6 +124,9 @@ describe('get/post', function () {
       method: 'post',
       query: {
         uid: 4,
+      },
+      headers: {
+        'X-My-Headers': '1'
       },
       dataType: 'application/json',
       data: {
@@ -119,8 +143,11 @@ describe('get/post', function () {
   });
 
   it('post user5 by FormData', function (done) {
-    nock(ROOT)
-      .post('/user')
+    nock(ROOT, {
+      reqheaders: {
+        'X-My-Headers': '1'
+      },
+    }).post('/user')
       .query({
         uid: 5,
       })
@@ -136,6 +163,9 @@ describe('get/post', function () {
       method: 'post',
       query: {
         uid: 5,
+      },
+      headers: {
+        'X-My-Headers': '1'
       },
       dataType: 'multipart/form-data',
       data: formData,
