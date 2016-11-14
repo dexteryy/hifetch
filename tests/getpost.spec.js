@@ -128,7 +128,7 @@ describe('get/post', function () {
       headers: {
         'X-My-Headers': '1'
       },
-      dataType: 'application/json',
+      dataType: 'json',
       data: {
         name: 'user4',
       },
@@ -167,7 +167,7 @@ describe('get/post', function () {
       headers: {
         'X-My-Headers': '1'
       },
-      dataType: 'multipart/form-data',
+      dataType: 'form',
       data: formData,
       success(res) {
         expect(res.name).to.be.equal('user5');

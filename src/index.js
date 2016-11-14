@@ -1,7 +1,14 @@
 
-import 'babel-polyfill';
 import 'isomorphic-fetch';
 import qs from 'qs';
+
+const mimeLib = {
+  json: 'application/json',
+  form: 'multipart/form-data',
+  html: 'text/html',
+  xml: 'application/xml',
+  text: 'text/plain',
+};
 
 class Hifetch {
 
@@ -11,15 +18,21 @@ class Hifetch {
     query: null,
     data: '',
     dataType: 'application/x-www-form-urlencoded',
+    jwtToken: '',
     headers: {},
+    enableCookies: false,
+    disableCORS: false,
+    validateStatus(status) {
+      return status >= 200 && status < 300;
+    },
     parser(response) {
       return response.json();
     },
     responseType: 'application/json',
     timeout: 0,
     handler: null,
-    success: null,
-    error: null,
+    success: res => res,
+    error: res => Promise.reject(res),
   };
 
   constructor(opt) {
@@ -28,34 +41,49 @@ class Hifetch {
       query,
       method,
       responseType,
-      dataType,
+      dataType: originDataType,
       data,
       headers,
+      jwtToken,
+      enableCookies,
+      disableCORS,
     } = this._config;
+    const fetchOpt = this._fetchOpt = {};
+    if (disableCORS) {
+      fetchOpt.mode = 'cors';
+    }
+    if (enableCookies) {
+      fetchOpt.credentials = disableCORS ? 'same-origin' : 'include';
+    }
+    const moreHeaders = {
+      Accept: /\//.test(responseType) ? responseType : mimeLib[responseType],
+    };
+    if (jwtToken) {
+      moreHeaders['Authorization'] = `Bearer ${jwtToken}`;
+    }
+    const dataType = (/\//.test(originDataType)
+      ? originDataType : mimeLib[originDataType]) || Hifetch.defaultConfig.dataType;
     const validMethod = method.toLowerCase();
     if (validMethod === 'post') {
       let dataString;
       if (typeof data === 'object') {
-        if (dataType.indexOf(Hifetch.defaultConfig.dataType) !== -1) {
+        if (dataType === Hifetch.defaultConfig.dataType) {
           dataString = qs.stringify(data);
         } else if (dataType.indexOf('json') !== -1) {
           dataString = JSON.stringify(data);
         }
       }
-      this._fetchOpt = {
+      Object.assign(fetchOpt, {
         method: 'POST',
-        headers: Object.assign({}, headers, {
-          Accept: responseType,
+        headers: Object.assign({}, headers, moreHeaders, {
           'Content-Type': dataType,
         }),
         body: dataString || data,
-      };
+      });
     } else {
-      this._fetchOpt = {
-        headers: Object.assign({}, headers, {
-          Accept: responseType,
-        }),
-      };
+      Object.assign(fetchOpt, {
+        headers: Object.assign({}, headers, moreHeaders),
+      });
     }
     this._queryString = query ? qs.stringify(query) : '';
   }
@@ -64,6 +92,7 @@ class Hifetch {
     const {
       url,
       timeout,
+      validateStatus,
       parser,
       handler,
       success,
@@ -90,7 +119,14 @@ class Hifetch {
           reject(res);
         }
       });
-    }).then(handleResponse).then(parser).then(data => {
+    }).then(response => {
+      if (validateStatus(response.status)) {
+        return response;
+      }
+      const err = new Error(response.statusText);
+      err.response = response;
+      throw err;
+    }).then(parser).then(data => {
       try {
         if (typeof data === 'object' && data.status) {
           return error({
@@ -152,15 +188,6 @@ class Hifetch {
     });
   }
 
-}
-
-function handleResponse(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response;
-  }
-  const err = new Error(response.statusText);
-  err.response = response;
-  throw err;
 }
 
 function uuid() {

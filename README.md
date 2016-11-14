@@ -21,8 +21,9 @@ hifetch({
   query: {
     mobile: true,
   },
+  jwtToken,
   headers: { // custom headers
-    'Authorization': `Bearer ${jwtToken}`,
+    'X-Requested-With': 'XMLHttpRequest',
   },
   timeout: 10000,
   handler(res) { // custom validator and processor
@@ -31,19 +32,13 @@ hifetch({
     }
     return res;
   },
-  success(res) {
-    console.log('success!', res.status);
-    // 0
-    return res;
-  },
-  error(res) {
-    console.log('error!', res.message);
-    console.log('error code:', res.status);
-    // 1 / 2 / 3 / 4 / 5 / 6, see "Error results"
-    return res;
-  },
 }).send().then(res => {
-  console.log('done!', res);
+  console.log('success!', res.status);
+  // 0
+}).catch(res => {
+  console.log('error!', res.message);
+  console.log('error code:', res.status);
+  // 1 / 2 / 3 / 4 / 5 / 6, see "Error results"
 });
 ```
 
@@ -55,7 +50,7 @@ hifetch({
   query: {
     mobile: true,
   },
-  responseType: 'text/html',
+  responseType: 'html', // or 'text/html',
   parser(response) {
     return response.text();
   },
@@ -87,7 +82,7 @@ hifetch({
   data: {
     name: 'yy',
   },
-  dataType: 'application/json',
+  dataType: 'json', // or 'application/json',
 ```
 
 Post form-data body
@@ -103,25 +98,43 @@ hifetch({
     mobile: true,
   },
   data: formData,
-  dataType: 'multipart/form-data',
+  dataType: 'form', // or 'multipart/form-data',
 ```
 
 ### Options
 
 * `url`
-* `method` - default: `'get'`
-* `query` - plain object
-* `data` - plain object, FormData object or string
-* `dataType` - custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
-* `responseType` - custom `'Accept'` header, default: `'application/json'`
-* `headers` - other custom headers
-* `parser` - default: `response => response.json()`
-* `timeout` - millisecond
-* `handler` - custom validator and processor
-* `success`
-* `error`
+* `method` - [optional] default: `'get'`
+* `query` - [optional] plain object
+* `data` - [optional] plain object, FormData object or string
+* `dataType` - [optional] custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
+* `responseType` - [optional] custom `'Accept'` header, default: `'application/json'`
+* `validateStatus` - [optional] acceptable HTTP response status code, default: `status => status >= 200 && status < 300`
+* `jwtToken` - [optional] add JWT header
+* `headers` - [optional] other custom headers
+* `enableCookies` - [optional] automatically send cookies, default: false
+* `disableCORS` - [optional] default: false
+* `parser` - [optional] default: `response => response.json()`
+* `timeout` - [optional] millisecond
+* `handler` - [optional] custom validator and processor
+* `success` - [optional] default: `res => res`
+* `error` - [optional] default: `res => Promise.reject(res)`
 
 ### Error results
+
+```javascript
+hifetch({
+  // ...
+}).send().catch({
+  status, // error code
+  message, // error log
+  ...other, // more info
+}) => {
+  // ...
+});
+```
+
+or
 
 ```javascript
 hifetch({
@@ -133,6 +146,7 @@ hifetch({
   }) {
     // ...
   },
+}).send();
 ```
 
 Error code:
