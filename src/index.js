@@ -152,6 +152,9 @@ class Hifetch {
           timeout,
         });
       }
+      if (err.status) {
+        return error(err);
+      }
       const {
         status: httpStatus,
         statusText: httpStatusText,

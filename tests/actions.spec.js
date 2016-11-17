@@ -9,6 +9,8 @@ import {
 describe('actions', function () {
 
   it('cancel()', function (done) {
+    let isSuccess = false;
+    let isError = false;
     nock(ROOT)
       .get('/delay')
       .delayConnection(200)
@@ -17,21 +19,30 @@ describe('actions', function () {
       });
     const req = hifetch({
       url: `${ROOT}/delay`,
-      success(res) {
-        expect(res.status).to.be.equal(0);
+      success() {
+        isSuccess = true;
       },
-      error(res) {
-        expect(res.status).to.not.be.equal(0);
+      error() {
+        isError = true;
       },
     });
-    req.send().then(done).catch(done);
+    const startTime = new Date().getTime();
+    function fetchDone() {
+      expect(isSuccess).to.be.false;
+      expect(isError).to.be.false;
+      expect(new Date().getTime() - startTime).to.be.above(300);
+      done();
+    }
+    req.send().then(fetchDone).catch(fetchDone);
     setTimeout(() => {
       req.cancel();
     }, 100);
-    setTimeout(done, 300);
+    setTimeout(fetchDone, 300);
   });
 
   it('error()', function (done) {
+    let isSuccess = false;
+    let isError = false;
     nock(ROOT)
       .get('/delay')
       .delayConnection(200)
@@ -40,20 +51,28 @@ describe('actions', function () {
       });
     const req = hifetch({
       url: `${ROOT}/delay`,
-      success(res) {
-        expect(res.status).to.be.equal(0);
+      success() {
+        isSuccess = true;
       },
       error(res) {
+        isError = true;
         expect(res.status).to.be.equal(6);
         expect(res.customError).to.be.an('error');
         expect(res.customError.toString()).to.be.include('test');
       },
     });
-    req.send().then(done).catch(done);
+    const startTime = new Date().getTime();
+    function fetchDone() {
+      expect(isSuccess).to.be.false;
+      expect(isError).to.be.true;
+      expect(new Date().getTime() - startTime).to.be.above(300);
+      done();
+    }
+    req.send().then(fetchDone).catch(fetchDone);
     setTimeout(() => {
       req.error(new Error('test'));
     }, 100);
-    setTimeout(done, 300);
+    setTimeout(fetchDone, 300);
   });
 
 });

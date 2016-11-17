@@ -1,6 +1,6 @@
 
-export const HOST = 'http://localhost';
-export const PORT = 8055;
+export const HOST = 'http://www.mydomain.com';
+export const PORT = 8056;
 export const ROOT = `${HOST}:${PORT}`;
 
 export function parseFormData(str) {
