@@ -103,22 +103,22 @@ hifetch({
 
 ### Options
 
-* `url`
-* `method` - [optional] default: `'get'`
-* `query` - [optional] plain object
-* `data` - [optional] plain object, FormData object or string
-* `dataType` - [optional] custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
-* `responseType` - [optional] custom `'Accept'` header, default: `'application/json'`
-* `validateStatus` - [optional] acceptable HTTP response status code, default: `status => status >= 200 && status < 300`
-* `jwtToken` - [optional] add JWT header
-* `headers` - [optional] other custom headers
-* `enableCookies` - [optional] automatically send cookies, default: false
-* `disableCORS` - [optional] default: false
-* `parser` - [optional] default: `response => response.json()`
-* `timeout` - [optional] millisecond
-* `handler` - [optional] custom validator and processor
-* `success` - [optional] default: `res => res`
-* `error` - [optional] default: `res => Promise.reject(res)`
+* `url` - [required]
+* `method` - default: `'get'`
+* `query` - plain object
+* `data` - plain object, FormData object or string
+* `dataType` - custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
+* `responseType` - custom `'Accept'` header, default: `'application/json'`
+* `validateStatus` - acceptable HTTP response status code, default: `status => status >= 200 && status < 300`
+* `jwtToken` - add JWT header
+* `headers` - other custom headers
+* `enableCookies` - automatically send cookies, default: false
+* `disableCORS` - default: false
+* `parser` - default: `response => response.json()`
+* `timeout` - millisecond
+* `handler` - custom validator and processor
+* `success` - default: `res => res`
+* `error` - default: `res => Promise.reject(res)`
 
 ### Error results
 
@@ -151,14 +151,14 @@ hifetch({
 
 Error code:
 
-* 1 - [INTERNAL JS ERROR]
-* 2 - [FETCH ERROR]
-* 3 - [REMOTE ERROR]
-* 4 - [CUSTOM JS ERROR]
-* 5 - [TIMEOUT ERROR]
-* 6 - [MANUAL ERROR]
+* 1 - [INTERNAL JS ERROR], [test case](https://github.com/dexteryy/hifetch/blob/master/tests/error1.spec.js)
+* 2 - [FETCH ERROR], [test case](https://github.com/dexteryy/hifetch/blob/master/tests/error2.spec.js)
+* 3 - [REMOTE ERROR], [test case](https://github.com/dexteryy/hifetch/blob/master/tests/error3.spec.js)
+* 4 - [CUSTOM JS ERROR], [test case](https://github.com/dexteryy/hifetch/blob/master/tests/error4.spec.js)
+* 5 - [TIMEOUT ERROR], [test case](https://github.com/dexteryy/hifetch/blob/master/tests/error5.spec.js)
+* 6 - [MANUAL ERROR], [test case](https://github.com/dexteryy/hifetch/blob/master/tests/actions.spec.js)
 
-See [errors.spec.js](https://github.com/dexteryy/hifetch/blob/master/tests/errors.spec.js) for more detail.
+
 
 ### Actions
 
