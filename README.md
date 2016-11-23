@@ -98,7 +98,53 @@ hifetch({
     mobile: true,
   },
   data: formData,
+```
+
+or
+
+```javascript
+hifetch({
+  url: 'http://www.mydomain.com/users/1/actions/createByFormData',
+  method: 'post',
+  query: {
+    mobile: true,
+  },
+  data: {
+    name: 'yy',
+  },
   dataType: 'form', // or 'multipart/form-data',
+```
+
+Post form-data body with files
+
+```javascript
+hifetch({
+  url: 'http://www.mydomain.com/users/1/actions/createByFormData',
+  method: 'post',
+  query: {
+    mobile: true,
+  },
+  data: {
+    name: 'yy',
+    avatar: imageFile,
+  },
+```
+
+or
+
+```javascript
+const formData = new FormData();
+formData.append('name', 'yy');
+formData.append('photos', imageFile1);
+formData.append('photos', imageFile2);
+
+hifetch({
+  url: 'http://www.mydomain.com/users/1/actions/createByFormData',
+  method: 'post',
+  query: {
+    mobile: true,
+  },
+  data: formData,
 ```
 
 ### Options
@@ -106,8 +152,9 @@ hifetch({
 * `url` - [required]
 * `method` - default: `'get'`
 * `query` - plain object
-* `data` - plain object, FormData object or string
+* `data` - plain object, FormData object or string. when using FormData, `dataType` can be omitted (always be 'multipart/form-data')
 * `dataType` - custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
+* `FormData` - [required in node.js environment] [FormData class](https://www.npmjs.com/package/form-data)
 * `responseType` - custom `'Accept'` header, default: `'application/json'`
 * `validateStatus` - acceptable HTTP response status code, default: `status => status >= 200 && status < 300`
 * `jwtToken` - add JWT header
