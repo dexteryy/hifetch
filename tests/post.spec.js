@@ -21,6 +21,8 @@ describe('post', function () {
         'X-My-Headers': '1',
         'Content-Type': /application\/x-www-form-urlencoded/,
       },
+    }).defaultReplyHeaders({
+      'X-Powered-By': 'nock',
     }).post('/user')
       .query({
         uid: 3,
@@ -42,10 +44,14 @@ describe('post', function () {
       data: {
         name: 'user3',
       },
+      mergeHeaders: {
+        poweredBy: 'X-Powered-By',
+      },
     }).send()
       .then(res => {
         expect(res.name).to.be.equal('user3');
         expect(res.status).to.be.equal(0);
+        expect(res.poweredBy).to.be.equal('nock');
         done();
       }).catch(err => {
         console.log(err);

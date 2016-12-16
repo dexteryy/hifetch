@@ -26,14 +26,12 @@ hifetch({
     'X-Requested-With': 'XMLHttpRequest',
   },
   timeout: 10000,
-  handler(res) { // custom validator and processor
-    if (!res[myExpectedData]) {
-      throw new Error(`NO ${myExpectedData}!`);
-    }
-    return res;
+  mergeHeaders: { // pick response headers
+    poweredBy: 'X-Powered-By',
   },
 }).send().then(res => {
   console.log('success!', res.status);
+  console.log('success!', res.poweredBy);
   // 0
 }).catch(res => {
   console.log('error!', res.message);
@@ -51,7 +49,7 @@ hifetch({
     mobile: true,
   },
   responseType: 'html', // or 'text/html',
-  parser(response) {
+  parser(response) { // custom parser for Fetch API's response
     return response.text();
   },
 ```
@@ -147,6 +145,27 @@ hifetch({
   data: formData,
 ```
 
+Custom validator for acceptable HTTP response status code
+
+```javascript
+Hifetch({
+  //...
+  validateStatus: status => status >= 200 && status < 300,
+```
+
+Custom validator and processor for response data
+
+```javascript
+Hifetch({
+  //...
+  handler: (res, headers) => {
+    if (res.xx) {
+      throw new Error(res.xx);
+    }
+    return Object.assign(headers, data);
+  },
+```
+
 ### Options
 
 * `url` - [required]
@@ -156,14 +175,15 @@ hifetch({
 * `dataType` - custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
 * `FormData` - [required in node.js environment] [FormData class](https://www.npmjs.com/package/form-data)
 * `responseType` - custom `'Accept'` header, default: `'application/json'`
-* `validateStatus` - acceptable HTTP response status code, default: `status => status >= 200 && status < 300`
+* `validateStatus` - custom validator for acceptable HTTP response status code, default: `status >= 200 && status < 300`
 * `jwtToken` - add JWT header
-* `headers` - other custom headers
+* `headers` - other custom request headers
+* `mergeHeaders` - plain object, pick response headers, for example: `{ poweredBy: 'X-Powered-By' }`
 * `enableCookies` - automatically send cookies, default: false
 * `disableCORS` - default: false
 * `parser` - default: `response => response.json()`
 * `timeout` - millisecond
-* `handler` - custom validator and processor
+* `handler` - custom validator and processor for response data
 * `success` - default: `res => res`
 * `error` - default: `res => Promise.reject(res)`
 

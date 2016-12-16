@@ -21,6 +21,7 @@ class Hifetch {
     FormData: typeof window !== 'undefined' ? window.FormData : null,
     jwtToken: '',
     headers: {},
+    mergeHeaders: {},
     enableCookies: false,
     disableCORS: false,
     validateStatus(status) {
@@ -116,6 +117,7 @@ class Hifetch {
       url,
       timeout,
       validateStatus,
+      mergeHeaders,
       parser,
       handler,
       success,
@@ -149,16 +151,37 @@ class Hifetch {
       const err = new Error(response.statusText);
       err.response = response;
       throw err;
-    }).then(parser).then(data => {
+    }).then(response => {
+      const headers = {};
+      Object.keys(mergeHeaders).forEach(key => {
+        const header = mergeHeaders[key];
+        if (header) {
+          headers[key] = response.headers.get(header);
+        }
+      });
+      const withHeaders = (data) => {
+        return {
+          data,
+          headers,
+        };
+      };
+      const parsed = parser(response);
+      if (parsed.then) {
+        return parsed.then(withHeaders);
+      }
+      return withHeaders(parsed);
+    }).then(({ data, headers }) => {
       try {
         if (typeof data === 'object' && data.status) {
-          return error({
+          return error(Object.assign(headers, {
             status: 3,
             message: `[REMOTE ERROR] status: ${data.status} message: ${data.message}`,
             data,
-          });
+          }));
         }
-        const result = handler ? handler(data) : data;
+        const result = handler
+          ? handler(data, headers)
+          : Object.assign(headers, data);
         return success(result);
       } catch (err) {
         return error({

@@ -13,6 +13,8 @@ describe('get', function () {
       reqheaders: {
         'X-My-Headers': '1',
       },
+    }).defaultReplyHeaders({
+      'X-Powered-By': 'nock',
     }).get('/user')
       .query({
         uid: 1,
@@ -28,9 +30,13 @@ describe('get', function () {
       headers: {
         'X-My-Headers': '1',
       },
+      mergeHeaders: {
+        poweredBy: 'X-Powered-By',
+      },
     }).send()
       .then(res => {
         expect(res.name).to.be.equal('user1');
+        expect(res.poweredBy).to.be.equal('nock');
         done();
       }).catch(err => {
         console.log(err);
@@ -42,6 +48,8 @@ describe('get', function () {
       reqheaders: {
         'X-My-Headers': '1',
       },
+    }).defaultReplyHeaders({
+      'X-Powered-By': 'nock',
     }).get('/user')
       .query({
         uid: 1,
@@ -57,13 +65,18 @@ describe('get', function () {
       headers: {
         'X-My-Headers': '1',
       },
+      mergeHeaders: {
+        poweredBy: 'X-Powered-By',
+      },
       success(res) {
         expect(res.name).to.be.equal('user1');
+        expect(res.poweredBy).to.be.equal('nock');
         return res;
       },
     }).send()
       .then(res => {
         expect(res.name).to.be.equal('user1');
+        expect(res.poweredBy).to.be.equal('nock');
         done();
       }).catch(err => {
         console.log(err);

@@ -10,6 +10,9 @@ describe('error: 3', function () {
 
   it('promise style', function (done) {
     nock(ROOT)
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
       .get('/error3')
       .reply(200, {
         status: -1,
@@ -17,10 +20,14 @@ describe('error: 3', function () {
       });
     const fetchConfig = {
       url: `${ROOT}/error3`,
+      mergeHeaders: {
+        poweredBy: 'X-Powered-By',
+      },
     };
     const errorHandler = res => {
       expect(res.status).to.be.equal(3);
       expect(res.data.status).to.be.equal(-1);
+      expect(res.poweredBy).to.be.equal('nock');
     };
     hifetch(fetchConfig).send()
       .catch(errorHandler)
@@ -33,6 +40,9 @@ describe('error: 3', function () {
 
   it('callback style', function (done) {
     nock(ROOT)
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
       .get('/error3')
       .reply(200, {
         status: -1,
@@ -40,10 +50,14 @@ describe('error: 3', function () {
       });
     const fetchConfig = {
       url: `${ROOT}/error3`,
+      mergeHeaders: {
+        poweredBy: 'X-Powered-By',
+      },
     };
     const errorHandler = res => {
       expect(res.status).to.be.equal(3);
       expect(res.data.status).to.be.equal(-1);
+      expect(res.poweredBy).to.be.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       error: errorHandler,
