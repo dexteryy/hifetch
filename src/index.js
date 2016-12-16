@@ -181,7 +181,9 @@ class Hifetch {
         }
         const result = handler
           ? handler(data, headers)
-          : Object.assign(headers, data);
+          : (typeof data !== 'string'
+            && Object.assign(headers, data)
+            || data);
         return success(result);
       } catch (err) {
         return error({

@@ -116,4 +116,31 @@ describe('get', function () {
       });
   });
 
+  it('text', function (done) {
+    nock(ROOT, {
+      reqheaders: {
+        'X-My-Headers': '1',
+      },
+    }).defaultReplyHeaders({
+      'X-Powered-By': 'nock',
+    }).get('/text')
+      .reply(200, 'some text');
+    hifetch({
+      url: `${ROOT}/text`,
+      headers: {
+        'X-My-Headers': '1',
+      },
+      parser: response => response.text(),
+      mergeHeaders: {
+        poweredBy: 'X-Powered-By',
+      },
+    }).send()
+      .then(res => {
+        expect(res).to.be.equal('some text');
+        done();
+      }).catch(err => {
+        console.log(err);
+      });
+  });
+
 });
