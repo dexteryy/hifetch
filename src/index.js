@@ -65,51 +65,48 @@ class Hifetch {
     if (jwtToken) {
       moreHeaders['Authorization'] = `Bearer ${jwtToken}`;
     }
-    const validMethod = method.toLowerCase();
-    if (validMethod !== 'post') {
-      Object.assign(fetchOpt, {
-        headers: Object.assign({}, headers, moreHeaders),
-      });
-      return;
-    }
-    let dataType, dataForBody;
+    let dataType;
+    let dataForBody = data;
     const mergeToForm = dict => {
       Object.keys(dict).forEach(key => {
         dataForBody.append(key, dict[key]);
       });
     };
-    dataType = (/\//.test(originDataType)
-      ? originDataType
-      : mimeLib[originDataType]) || Hifetch.defaultConfig.dataType;
-    if (typeof data === 'object') {
-      if (FormData && (data instanceof FormData)) {
-        dataType = mimeLib.form;
-      } else if (data.constructor !== Object) {
-        throw new Error('hifetch: `data` must be a plain object, FormData object or string');
-      } else if (dataType === mimeLib.form) {
-        dataForBody = new FormData();
-        mergeToForm(data);
-      } else if (dataType === Hifetch.defaultConfig.dataType) {
-        dataForBody = qs.stringify(data);
-      } else if (dataType.indexOf('json') !== -1) {
-        dataForBody = JSON.stringify(data);
+    if (data) {
+      dataType = (/\//.test(originDataType)
+        ? originDataType
+        : mimeLib[originDataType]) || Hifetch.defaultConfig.dataType;
+      if (typeof data === 'object') {
+        if (FormData && (data instanceof FormData)) {
+          dataType = mimeLib.form;
+        } else if (data.constructor !== Object) {
+          throw new Error('hifetch: `data` must be a plain object, FormData object or string');
+        } else if (dataType === mimeLib.form) {
+          dataForBody = new FormData();
+          mergeToForm(data);
+        } else if (dataType === Hifetch.defaultConfig.dataType) {
+          dataForBody = qs.stringify(data);
+        } else if (dataType.indexOf('json') !== -1) {
+          dataForBody = JSON.stringify(data);
+        }
       }
     }
     Object.assign(fetchOpt, {
-      method: 'POST',
+      method: method.toUpperCase(),
       headers: Object.assign(
         {},
         headers,
         moreHeaders,
-        dataType === mimeLib.form ? {
+        (!dataType || dataType === mimeLib.form) ? {
           // leave Content-Type' field empty, Fetch APi will automatically create:
           // Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryyEmKNDsBKjB7QEqu
         } : {
           'Content-Type': dataType,
         },
       ),
-      body: dataForBody || data,
-    });
+    }, data ? {
+      body: dataForBody,
+    } : {});
   }
 
   send() {
