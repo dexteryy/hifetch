@@ -1,12 +1,13 @@
 {
   "name": "hifetch",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "A minimal higher-level wrapper around Fetch API",
   "author": "dexteryy <dexter.yy@gmail.com>",
   "contributors": [],
   "bugs": {
     "url": "https://github.com/dexteryy/hifetch/issues"
   },
+  "homepage": "https://github.com/dexteryy/hifetch",
   "repository": "https://github.com/dexteryy/hifetch",
   "license": "MIT",
   "main": "build/dist/index.js",
@@ -24,6 +25,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "engines": {
+    "node": ">=6"
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",
@@ -54,6 +58,11 @@
     "nock": "^9.0.11"
   },
   "keywords": [
-    "fetch"
+    "fetch",
+    "xhr",
+    "ajax",
+    "promise",
+    "error-handling",
+    "isomorphic"
   ]
 }

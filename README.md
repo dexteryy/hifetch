@@ -1,6 +1,27 @@
 
 # hifetch
 
+[![NPM Version][npm-image]][npm-url]
+[![Build Status][travis-image]][travis-url]
+[![Dependencies Status][dep-image]][dep-url]
+[![Test Coverage][coveralls-image]][coveralls-url]
+
+[![Nodei][nodei-image]][npm-url]
+
+[npm-image]: https://img.shields.io/npm/v/hifetch.svg
+[nodei-image]: https://nodei.co/npm/hifetch.png?downloads=true
+[npm-url]: https://npmjs.org/package/hifetch
+[travis-image]: https://img.shields.io/travis/dexteryy/hifetch/master.svg
+[travis-url]: https://travis-ci.org/dexteryy/hifetch
+[dep-image]: https://david-dm.org/dexteryy/hifetch.svg
+[dep-url]: https://david-dm.org/dexteryy/hifetch
+[coveralls-image]: https://img.shields.io/coveralls/dexteryy/nodecube/master.svg
+[coveralls-url]: https://coveralls.io/r/dexteryy/nodecube?branch=master
+
+![iOS Safari](https://github.com/alrra/browser-logos/raw/master/src/safari-ios/safari-ios_48x48.png) | ![Android WebView](https://github.com/alrra/browser-logos/raw/master/src/android/android_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
+--- | --- | --- |
+iOS 7+ ✔ | Android 4+ ✔ | 11+ ✔ |
+
 A minimal higher-level wrapper around [Fetch](https://github.com/github/fetch) API
 
 Built on top of [isomorphic-fetch](https://www.npmjs.com/package/isomorphic-fetch)
