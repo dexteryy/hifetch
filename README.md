@@ -1,6 +1,8 @@
 
 # hifetch
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/dexteryy/hifetch.svg)](https://greenkeeper.io/)
+
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Dependencies Status][dep-image]][dep-url]
