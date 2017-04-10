@@ -5,6 +5,7 @@
 [![Build Status][travis-image]][travis-url]
 [![Dependencies Status][dep-image]][dep-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
+[![Greenkeeper badge][greenkeeper-image]](https://greenkeeper.io/)
 
 [![Nodei][nodei-image]][npm-url]
 
@@ -17,6 +18,7 @@
 [dep-url]: https://david-dm.org/dexteryy/hifetch
 [coveralls-image]: https://img.shields.io/coveralls/dexteryy/nodecube/master.svg
 [coveralls-url]: https://coveralls.io/r/dexteryy/nodecube?branch=master
+[greenkeeper-image]: https://badges.greenkeeper.io/dexteryy/hifetch.svg
 
 ![iOS Safari](https://github.com/alrra/browser-logos/raw/master/src/safari-ios/safari-ios_48x48.png) | ![Android WebView](https://github.com/alrra/browser-logos/raw/master/src/android/android_48x48.png) | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png) |
 --- | --- | --- |
