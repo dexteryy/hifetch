@@ -168,10 +168,10 @@ class Hifetch {
         const allHeaders = {};
         let headerEntries = [];
         if (headers._headers) {
-          headerEntries = Object.entries(headers._headers)
-            .map(([key, value]) => ([
+          headerEntries = Object.keys(headers._headers)
+            .map(key => ([
               key,
-              value.join('; '),
+              headers._headers[key].join('; '),
             ]));
         } else if (headers.entries) {
           headerEntries = headers.entries();
