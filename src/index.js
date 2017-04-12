@@ -24,6 +24,7 @@ class Hifetch {
     mergeHeaders: {},
     enableCookies: false,
     disableCORS: false,
+    enableMeta: false,
     validateStatus(status) {
       return status >= 200 && status < 300;
     },
@@ -115,6 +116,7 @@ class Hifetch {
       timeout,
       validateStatus,
       mergeHeaders,
+      enableMeta,
       parser,
       handler,
       success,
@@ -149,17 +151,47 @@ class Hifetch {
       err.response = response;
       throw err;
     }).then(response => {
-      const headers = {};
+      const headersForMerge = {};
       Object.keys(mergeHeaders).forEach(key => {
         const header = mergeHeaders[key];
         if (header) {
-          headers[key] = response.headers.get(header);
+          headersForMerge[key] = response.headers.get(header);
         }
       });
       const withHeaders = (data) => {
+        const {
+          status,
+          statusText,
+          url,
+          headers,
+        } = response;
+        const allHeaders = {};
+        let headerEntries = [];
+        if (headers._headers) {
+          headerEntries = Object.entries(headers._headers)
+            .map(([key, value]) => ([
+              key,
+              value.join('; '),
+            ]));
+        } else if (headers.entries) {
+          headerEntries = headers.entries();
+        }
+        for (const i of headerEntries) {
+          if (i && i[0]) {
+            allHeaders[i[0]] = i[1];
+          }
+        }
+        const meta = {
+          status,
+          statusText,
+          url,
+          headers: allHeaders,
+          response,
+        };
         return {
           data,
-          headers,
+          headersForMerge,
+          meta,
         };
       };
       const parsed = parser(response);
@@ -167,26 +199,38 @@ class Hifetch {
         return parsed.then(withHeaders);
       }
       return withHeaders(parsed);
-    }).then(({ data, headers }) => {
+    }).then(({
+      data,
+      headersForMerge,
+      meta,
+    }) => {
       try {
-        if (typeof data === 'object' && data.status) {
-          return error(Object.assign(headers, {
+        const result = handler
+          ? handler(data, headersForMerge, meta)
+          : (typeof data !== 'string'
+            && Object.assign(headersForMerge, data)
+            || data);
+        if (typeof result === 'object' && result.status) {
+          return error({
             status: 3,
             message: `[REMOTE ERROR] status: ${data.status} message: ${data.message}`,
-            data,
-          }));
+            data: result,
+            meta: Object.assign({
+              data: result,
+            }, meta),
+          });
         }
-        const result = handler
-          ? handler(data, headers)
-          : (typeof data !== 'string'
-            && Object.assign(headers, data)
-            || data);
-        return success(result);
+        return success(enableMeta
+          ? Object.assign({
+            data: result,
+          }, meta)
+          : result);
       } catch (err) {
         return error({
           status: 4,
           message: `[CUSTOM JS ERROR] ${clearErrorMessage(err)}`,
           error: err,
+          meta,
         });
       }
     }).catch(err => {

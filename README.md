@@ -49,17 +49,45 @@ hifetch({
     'X-Requested-With': 'XMLHttpRequest',
   },
   timeout: 10000,
-  mergeHeaders: { // pick response headers
-    poweredBy: 'X-Powered-By',
-  },
+  // enableMeta: true,
 }).send().then(res => {
-  console.log('success!', res.status);
-  console.log('success!', res.poweredBy);
-  // 0
+  // res
 }).catch(res => {
   console.log('error!', res.message);
   console.log('error code:', res.status);
   // 1 / 2 / 3 / 4 / 5 / 6, see "Error results"
+});
+```
+
+Get meta data
+
+```javascript
+hifetch({
+  url: 'http://www.mydomain.com/users/1/',
+  query: {
+    mobile: true,
+  },
+  enableMeta: true,
+}).send().then(meta => {
+  // meta.data
+  // meta.status
+  // meta.statusText
+  // meta.url
+  // meta.headers
+  // meta.response
+});
+```
+
+Merge headers into JSON result
+
+```javascript
+hifetch({
+  url: 'http://www.mydomain.com/users/1/',
+  mergeHeaders: { // pick response headers
+    poweredBy: 'X-Powered-By',
+  },
+}).send().then(res => {
+  // res.poweredBy
 });
 ```
 
@@ -171,7 +199,7 @@ hifetch({
 Custom validator for acceptable HTTP response status code
 
 ```javascript
-Hifetch({
+hifetch({
   //...
   validateStatus: status => status >= 200 && status < 300,
 ```
@@ -179,7 +207,7 @@ Hifetch({
 Custom validator and processor for response data
 
 ```javascript
-Hifetch({
+hifetch({
   //...
   handler: (res, headers) => {
     if (res.xx) {
@@ -204,6 +232,7 @@ Hifetch({
 * `mergeHeaders` - plain object, pick response headers, for example: `{ poweredBy: 'X-Powered-By' }`
 * `enableCookies` - automatically send cookies, default: false
 * `disableCORS` - default: false
+* `enableMeta` - embed result into a meta data with status, headers and response object. default: false
 * `parser` - default: `response => response.json()`
 * `timeout` - millisecond
 * `handler` - custom validator and processor for response data

@@ -49,9 +49,9 @@ describe('post', function () {
       },
     }).send()
       .then(res => {
-        expect(res.name).to.be.equal('user3');
-        expect(res.status).to.be.equal(0);
-        expect(res.poweredBy).to.be.equal('nock');
+        expect(res.name).to.equal('user3');
+        expect(res.status).to.equal(0);
+        expect(res.poweredBy).to.equal('nock');
         done();
       }).catch(err => {
         console.log(err);
@@ -88,8 +88,8 @@ describe('post', function () {
       },
     }).send()
       .then(res => {
-        expect(res.name).to.be.equal('user4');
-        expect(res.status).to.be.equal(0);
+        expect(res.name).to.equal('user4');
+        expect(res.status).to.equal(0);
         done();
       }).catch(err => {
         console.log(err);
@@ -128,10 +128,10 @@ describe('post', function () {
       FormData,
     }).send()
       .then(res => {
-        expect(res.status).to.be.equal(0);
+        expect(res.status).to.equal(0);
         checkFormData(res.body, {
           name: value => {
-            expect(value).to.be.equal('user5');
+            expect(value).to.equal('user5');
           },
         });
         done();
@@ -173,10 +173,10 @@ describe('post', function () {
       FormData,
     }).send()
       .then(res => {
-        expect(res.status).to.be.equal(0);
+        expect(res.status).to.equal(0);
         checkFormData(res.body, {
           name: value => {
-            expect(value).to.be.equal('user6');
+            expect(value).to.equal('user6');
           },
         });
         done();
@@ -219,13 +219,13 @@ describe('post', function () {
       FormData,
     }).send()
       .then(res => {
-        expect(res.status).to.be.equal(0);
+        expect(res.status).to.equal(0);
         checkFormData(res.body, {
           name: value => {
-            expect(value).to.be.equal('user7');
+            expect(value).to.equal('user7');
           },
           logo: value => {
-            expect(value).to.be.equal('Content-Type: application/octet-stream');
+            expect(value).to.equal('Content-Type: application/octet-stream');
           },
         });
         done();
@@ -269,14 +269,14 @@ describe('post', function () {
       FormData,
     }).send()
       .then(res => {
-        expect(res.status).to.be.equal(0);
+        expect(res.status).to.equal(0);
         checkFormData(res.body, {
           name: value => {
-            expect(value).to.be.equal('user8');
+            expect(value).to.equal('user8');
           },
           files: value => {
             fileCount++;
-            expect(value).to.be.equal('Content-Type: application/octet-stream');
+            expect(value).to.equal('Content-Type: application/octet-stream');
           },
         });
         expect(fileCount).to.equal(2);

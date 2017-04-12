@@ -56,7 +56,7 @@ describe('actions', function () {
       },
       error(res) {
         isError = true;
-        expect(res.status).to.be.equal(6);
+        expect(res.status).to.equal(6);
         expect(res.customError).to.be.an('error');
         expect(res.customError.toString()).to.be.include('test');
       },

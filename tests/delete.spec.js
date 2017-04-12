@@ -36,8 +36,8 @@ describe('delete', function () {
       },
     }).send()
       .then(res => {
-        expect(res.name).to.be.equal('user1');
-        expect(res.poweredBy).to.be.equal('nock');
+        expect(res.name).to.equal('user1');
+        expect(res.poweredBy).to.equal('nock');
         done();
       }).catch(err => {
         console.log(err);

@@ -43,9 +43,9 @@ describe('put', function () {
       },
     }).send()
       .then(res => {
-        expect(res.name).to.be.equal('user3');
-        expect(res.status).to.be.equal(0);
-        expect(res.poweredBy).to.be.equal('nock');
+        expect(res.name).to.equal('user3');
+        expect(res.status).to.equal(0);
+        expect(res.poweredBy).to.equal('nock');
         done();
       }).catch(err => {
         console.log(err);
@@ -82,8 +82,8 @@ describe('put', function () {
       },
     }).send()
       .then(res => {
-        expect(res.name).to.be.equal('user4');
-        expect(res.status).to.be.equal(0);
+        expect(res.name).to.equal('user4');
+        expect(res.status).to.equal(0);
         done();
       }).catch(err => {
         console.log(err);

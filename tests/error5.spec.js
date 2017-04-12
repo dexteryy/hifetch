@@ -20,8 +20,8 @@ describe('error: 5', function () {
       timeout: 100,
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(5);
-      expect(res.timeout).to.be.equal(100);
+      expect(res.status).to.equal(5);
+      expect(res.timeout).to.equal(100);
       return res;
     };
     hifetch(fetchConfig).send()
@@ -45,8 +45,8 @@ describe('error: 5', function () {
       timeout: 100,
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(5);
-      expect(res.timeout).to.be.equal(100);
+      expect(res.status).to.equal(5);
+      expect(res.timeout).to.equal(100);
       return res;
     };
     hifetch(Object.assign({}, fetchConfig, {
@@ -71,7 +71,7 @@ describe('error: 5', function () {
       timeout: 300,
     };
     const successHandler = res => {
-      expect(res.status).to.be.equal(0);
+      expect(res.status).to.equal(0);
     };
     hifetch(fetchConfig).send()
       .then(successHandler)
@@ -94,7 +94,7 @@ describe('error: 5', function () {
       timeout: 300,
     };
     const successHandler = res => {
-      expect(res.status).to.be.equal(0);
+      expect(res.status).to.equal(0);
     };
     hifetch(Object.assign({}, fetchConfig, {
       success: successHandler,

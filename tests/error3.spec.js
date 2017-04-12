@@ -25,9 +25,11 @@ describe('error: 3', function () {
       },
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(3);
-      expect(res.data.status).to.be.equal(-1);
-      expect(res.poweredBy).to.be.equal('nock');
+      expect(res.status).to.equal(3);
+      expect(res.meta.data.status).to.equal(-1);
+      expect(res.meta.data.poweredBy).to.equal('nock');
+      expect(res.meta.status).to.equal(200);
+      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(fetchConfig).send()
       .catch(errorHandler)
@@ -55,9 +57,11 @@ describe('error: 3', function () {
       },
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(3);
-      expect(res.data.status).to.be.equal(-1);
-      expect(res.poweredBy).to.be.equal('nock');
+      expect(res.status).to.equal(3);
+      expect(res.meta.data.status).to.equal(-1);
+      expect(res.meta.data.poweredBy).to.equal('nock');
+      expect(res.meta.status).to.equal(200);
+      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       error: errorHandler,

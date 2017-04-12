@@ -18,8 +18,8 @@ describe('error: 2', function () {
       url: `${ROOT}/error2`,
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(2);
-      expect(res.httpStatus).to.be.equal(500);
+      expect(res.status).to.equal(2);
+      expect(res.httpStatus).to.equal(500);
     };
     hifetch(fetchConfig).send()
       .catch(errorHandler)
@@ -40,8 +40,8 @@ describe('error: 2', function () {
       url: `${ROOT}/error2`,
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(2);
-      expect(res.httpStatus).to.be.equal(500);
+      expect(res.status).to.equal(2);
+      expect(res.httpStatus).to.equal(500);
     };
     hifetch(Object.assign({}, fetchConfig, {
       error: errorHandler,

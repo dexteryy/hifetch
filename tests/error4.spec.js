@@ -10,6 +10,9 @@ describe('error: 4', function () {
 
   it('from handler, promise style', function (done) {
     nock(ROOT)
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
       .get('/error4')
       .reply(200, {
         status: 0,
@@ -23,8 +26,10 @@ describe('error: 4', function () {
       },
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(4);
+      expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
+      expect(res.meta.status).to.equal(200);
+      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(fetchConfig).send()
       .catch(errorHandler)
@@ -37,6 +42,9 @@ describe('error: 4', function () {
 
   it('from handler, callback style', function (done) {
     nock(ROOT)
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
       .get('/error4')
       .reply(200, {
         status: 0,
@@ -50,8 +58,10 @@ describe('error: 4', function () {
       },
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(4);
+      expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
+      expect(res.meta.status).to.equal(200);
+      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       error: errorHandler,
@@ -65,6 +75,9 @@ describe('error: 4', function () {
 
   it('from success, promise style', function (done) {
     nock(ROOT)
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
       .get('/error4')
       .reply(200, {
         status: 0,
@@ -73,13 +86,15 @@ describe('error: 4', function () {
       url: `${ROOT}/error4`,
     };
     const successHandler = res => {
-      expect(res.status).to.be.equal(0);
+      expect(res.status).to.equal(0);
       const a = 1;
       a.b = 2;
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(4);
+      expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
+      expect(res.meta.status).to.equal(200);
+      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       success: successHandler,
@@ -94,6 +109,9 @@ describe('error: 4', function () {
 
   it('from success, callback style', function (done) {
     nock(ROOT)
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
       .get('/error4')
       .reply(200, {
         status: 0,
@@ -102,13 +120,15 @@ describe('error: 4', function () {
       url: `${ROOT}/error4`,
     };
     const successHandler = res => {
-      expect(res.status).to.be.equal(0);
+      expect(res.status).to.equal(0);
       const a = 1;
       a.b = 2;
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(4);
+      expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
+      expect(res.meta.status).to.equal(200);
+      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       success: successHandler,

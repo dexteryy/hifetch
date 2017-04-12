@@ -12,7 +12,7 @@ describe('error: 1', function () {
       url: `${ROOT}/error1`,
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(1);
+      expect(res.status).to.equal(1);
       expect(res.error).to.exist;
     };
     hifetch(fetchConfig).send()
@@ -29,7 +29,7 @@ describe('error: 1', function () {
       url: `${ROOT}/error1`,
     };
     const errorHandler = res => {
-      expect(res.status).to.be.equal(1);
+      expect(res.status).to.equal(1);
       expect(res.error).to.exist;
     };
     hifetch(Object.assign({}, fetchConfig, {
