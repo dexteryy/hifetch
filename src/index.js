@@ -21,7 +21,9 @@ class Hifetch {
     FormData: typeof window !== 'undefined' ? window.FormData : null,
     jwtToken: '',
     headers: {},
-    mergeHeaders: {}, // @deprecated
+    timeout: 0,
+    responseType: 'application/json',
+    mergeHeaders: {},
     filterHeaders: null,
     enableCookies: false,
     disableCORS: false,
@@ -33,11 +35,9 @@ class Hifetch {
     parser(response) {
       return response.json();
     },
-    responseType: 'application/json',
-    timeout: 0,
     handler: (data, headersForMerge) => {
       return (typeof data !== 'string' && !Array.isArray(data))
-        ? Object.assign(headersForMerge, data) // @deprecated
+        ? Object.assign(headersForMerge, data)
         : data;
     },
     success: res => res,
@@ -159,8 +159,16 @@ class Hifetch {
         }
       });
     }).then(response => {
-      if (validateStatus(response.status)) {
-        return response;
+      try {
+        if (validateStatus(response.status)) {
+          return response;
+        }
+      } catch (e) {
+        return error({
+          status: 4,
+          message: `[CUSTOM JS ERROR] ${clearErrorMessage(e)}`,
+          error: e,
+        });
       }
       const err = new Error(response.statusText);
       err.response = response;
@@ -213,7 +221,16 @@ class Hifetch {
           meta,
         };
       };
-      const parsed = parser(response);
+      let parsed;
+      try {
+        parsed = parser(response);
+      } catch (err) {
+        return error({
+          status: 4,
+          message: `[CUSTOM JS ERROR] ${clearErrorMessage(err)}`,
+          error: err,
+        });
+      }
       if (parsed.then) {
         return parsed.then(withHeaders);
       }
@@ -224,7 +241,10 @@ class Hifetch {
       meta,
     }) => {
       try {
-        const result = handler(data, headersForMerge, meta);
+        let result = handler ? handler(data, headersForMerge, meta) : data;
+        if (typeof result !== 'string' && !Array.isArray(result)) {
+          result = Object.assign(headersForMerge, data);
+        }
         if (typeof result === 'object' && result.status) {
           return error(Object.assign({}, meta, {
             status: 3,
