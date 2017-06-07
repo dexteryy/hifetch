@@ -68,26 +68,18 @@ hifetch({
     mobile: true,
   },
   enableMeta: true,
+  // enableResponseObject: true,
+  // filterHeaders: {
+  //   'content-type': true,
+  // },
 }).send().then(meta => {
-  // meta.data
   // meta.status
-  // meta.statusText
+  // meta.data
+  // meta.httpStatus
+  // meta.httpStatusText
   // meta.url
   // meta.headers
-  // meta.response
-});
-```
-
-Merge headers into JSON result
-
-```javascript
-hifetch({
-  url: 'http://www.mydomain.com/users/1/',
-  mergeHeaders: { // pick response headers
-    poweredBy: 'X-Powered-By',
-  },
-}).send().then(res => {
-  // res.poweredBy
+  // meta.response // if enableResponseObject is true
 });
 ```
 
@@ -229,10 +221,12 @@ hifetch({
 * `validateStatus` - custom validator for acceptable HTTP response status code, default: `status >= 200 && status < 300`
 * `jwtToken` - add JWT header
 * `headers` - other custom request headers
-* `mergeHeaders` - plain object, pick response headers, for example: `{ poweredBy: 'X-Powered-By' }`
+* `filterHeaders` - plain object, pick response headers, for example: `{ 'X-Powered-By': true }` or `{ 'x-powered-by': true }`
+* `mergeHeaders` (deprecated) - plain object, pick response headers, for example: `{ poweredBy: 'X-Powered-By' }`
 * `enableCookies` - automatically send cookies, default: false
 * `disableCORS` - default: false
-* `enableMeta` - embed result into a meta data with status, headers and response object. default: false
+* `enableMeta` - embed result into a meta data with status, httpStatus, headers. default: false
+* `enableResponseObject` - like `enableMeta`, plus the response object. default: false
 * `parser` - default: `response => response.json()`
 * `timeout` - millisecond
 * `handler` - custom validator and processor for response data

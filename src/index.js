@@ -21,10 +21,12 @@ class Hifetch {
     FormData: typeof window !== 'undefined' ? window.FormData : null,
     jwtToken: '',
     headers: {},
-    mergeHeaders: {},
+    mergeHeaders: {}, // @deprecated
+    filterHeaders: null,
     enableCookies: false,
     disableCORS: false,
     enableMeta: false,
+    enableResponseObject: false,
     validateStatus(status) {
       return status >= 200 && status < 300;
     },
@@ -33,7 +35,11 @@ class Hifetch {
     },
     responseType: 'application/json',
     timeout: 0,
-    handler: null,
+    handler: (data, headersForMerge) => {
+      return (typeof data !== 'string' && !Array.isArray(data))
+        ? Object.assign(headersForMerge, data) // @deprecated
+        : data;
+    },
     success: res => res,
     error: res => Promise.reject(res),
   };
@@ -116,13 +122,22 @@ class Hifetch {
       timeout,
       validateStatus,
       mergeHeaders,
+      filterHeaders,
       enableMeta,
+      enableResponseObject,
       parser,
       handler,
       success,
       error,
     } = this._config;
     const current = this._current = uuid();
+    let _filterHeaders;
+    if (filterHeaders) {
+      _filterHeaders = {};
+      for (const header in filterHeaders) {
+        _filterHeaders[header.toLowerCase()] = filterHeaders[header];
+      }
+    }
     return new Promise((resolve, reject) => {
       if (timeout) {
         setTimeout(() => {
@@ -177,17 +192,21 @@ class Hifetch {
           headerEntries = headers.entries();
         }
         for (const i of headerEntries) {
-          if (i && i[0]) {
+          if (i && i[0]
+              && (!_filterHeaders || _filterHeaders[i[0]])) {
             allHeaders[i[0]] = i[1];
           }
         }
         const meta = {
-          status,
-          statusText,
+          status: 0,
+          httpStatus: status,
+          httpStatusText: statusText,
           url,
           headers: allHeaders,
-          response,
         };
+        if (enableResponseObject) {
+          meta.response = response;
+        }
         return {
           data,
           headersForMerge,
@@ -205,33 +224,25 @@ class Hifetch {
       meta,
     }) => {
       try {
-        const result = handler
-          ? handler(data, headersForMerge, meta)
-          : (typeof data !== 'string'
-            && Object.assign(headersForMerge, data)
-            || data);
+        const result = handler(data, headersForMerge, meta);
         if (typeof result === 'object' && result.status) {
-          return error({
+          return error(Object.assign({}, meta, {
             status: 3,
             message: `[REMOTE ERROR] status: ${data.status} message: ${data.message}`,
             data: result,
-            meta: Object.assign({
-              data: result,
-            }, meta),
-          });
+          }));
         }
-        return success(enableMeta
+        return success(enableResponseObject || enableMeta
           ? Object.assign({
             data: result,
           }, meta)
           : result);
       } catch (err) {
-        return error({
+        return error(Object.assign({}, meta, {
           status: 4,
           message: `[CUSTOM JS ERROR] ${clearErrorMessage(err)}`,
           error: err,
-          meta,
-        });
+        }));
       }
     }).catch(err => {
       if (err === 'timeout') {

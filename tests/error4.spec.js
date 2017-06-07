@@ -28,8 +28,8 @@ describe('error: 4', function () {
     const errorHandler = res => {
       expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
-      expect(res.meta.status).to.equal(200);
-      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
+      expect(res.httpStatus).to.equal(200);
+      expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(fetchConfig).send()
       .catch(errorHandler)
@@ -60,8 +60,8 @@ describe('error: 4', function () {
     const errorHandler = res => {
       expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
-      expect(res.meta.status).to.equal(200);
-      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
+      expect(res.httpStatus).to.equal(200);
+      expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       error: errorHandler,
@@ -93,8 +93,8 @@ describe('error: 4', function () {
     const errorHandler = res => {
       expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
-      expect(res.meta.status).to.equal(200);
-      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
+      expect(res.httpStatus).to.equal(200);
+      expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       success: successHandler,
@@ -127,8 +127,8 @@ describe('error: 4', function () {
     const errorHandler = res => {
       expect(res.status).to.equal(4);
       expect(res.error).to.be.an('error');
-      expect(res.meta.status).to.equal(200);
-      expect(res.meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
+      expect(res.httpStatus).to.equal(200);
+      expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
     hifetch(Object.assign({}, fetchConfig, {
       success: successHandler,
