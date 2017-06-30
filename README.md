@@ -204,6 +204,7 @@ hifetch({
   mergeHeaders: {
     version: 'X-API-Version',
   },
+  enableMeta: true,
   // enableResponseObject: true,
 }).send().then(res => {
   // result:
@@ -232,6 +233,7 @@ hifetch({
   filterHeaders: {
     'content-type': true,
   },
+  enableMeta: true,
 }).send().then(res => {
   // result:
   // {

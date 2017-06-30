@@ -35,7 +35,7 @@ class Hifetch {
     parser(response) {
       return response.json();
     },
-    handler: (data, headersForMerge) => {
+    handler(data, headersForMerge) {
       return (typeof data !== 'string' && !Array.isArray(data))
         ? Object.assign(headersForMerge, data)
         : data;
@@ -241,10 +241,7 @@ class Hifetch {
       meta,
     }) => {
       try {
-        let result = handler ? handler(data, headersForMerge, meta) : data;
-        if (typeof result !== 'string' && !Array.isArray(result)) {
-          result = Object.assign(headersForMerge, data);
-        }
+        const result = handler(data, headersForMerge, meta);
         if (typeof result === 'object' && result.status) {
           return error(Object.assign({}, meta, {
             status: 3,
