@@ -27,6 +27,7 @@ class Hifetch {
     filterHeaders: null,
     enableCookies: false,
     disableCORS: false,
+    disableRemoteError: false,
     enableMeta: false,
     enableResponseObject: false,
     validateStatus(status) {
@@ -123,6 +124,7 @@ class Hifetch {
       validateStatus,
       mergeHeaders,
       filterHeaders,
+      disableRemoteError,
       enableMeta,
       enableResponseObject,
       parser,
@@ -242,7 +244,7 @@ class Hifetch {
     }) => {
       try {
         const result = handler(data, headersForMerge, meta);
-        if (typeof result === 'object' && result.status) {
+        if (!disableRemoteError && typeof result === 'object' && result.status) {
           return error(Object.assign({}, meta, {
             status: 3,
             message: `[REMOTE ERROR] status: ${data.status} message: ${data.message}`,

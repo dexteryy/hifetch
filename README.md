@@ -85,6 +85,8 @@ Hifetch supports JSON response with [unix-style exit status](https://en.wikipedi
 
 A zero exit status indicates succeeded. A nonzero exit status indicates failure)
 
+You can disable this feature with the `disableRemoteError` option
+
 ```javascript
 // GET http://www.mydomain.com/users/1/?mobile=false
 // + Response 200 (application/json; charset=utf-8)
@@ -371,39 +373,86 @@ hifetch({
 
 #### Request
 
-* `url` - [required]
-* `method` - default: `'get'`
-* `query` - plain object
-* `data` - plain object, FormData object or string. when using FormData, `dataType` can be omitted (always be 'multipart/form-data')
-* `dataType` - custom `'Content-Type'` header, default: `'application/x-www-form-urlencoded'`
-* `FormData` - [required in node.js environment] [FormData class](https://www.npmjs.com/package/form-data)
-* `headers` - other custom request headers
-* `jwtToken` - add JWT header
+* `url`
+  * Required
+* `method`
+  * Default: `'get'`
+* `query`
+  * Type: plain object
+* `dataType`
+  * Default: `'application/x-www-form-urlencoded'`
+  * Custom `'Content-Type'` header
+* `data`
+  * Type: plain object, FormData object or String
+  * When using FormData, `dataType` can be omitted (always be 'multipart/form-data')
+* `FormData`
+  * Required in node.js environment
+  * [FormData class](https://www.npmjs.com/package/form-data)
+* `headers`
+  * Other custom request headers
+* `jwtToken`
+  * Add JWT header
 
 #### Response
 
-* `responseType` - custom `'Accept'` header, default: `'application/json'`
-* `mergeHeaders` - plain object, merge some response headers into the JSON object reponse), for example: `{ poweredBy: 'X-Powered-By' }`, default: null
-* `filterHeaders` - plain object, pick some response headers, for example: `{ 'X-Powered-By': true }` or `{ 'x-powered-by': true }`, default: null
-* `timeout` - millisecond
-* `enableCookies` - boolean,automatically send cookies, default: false
-* `disableCORS` - boolean,default: false
-* `enableMeta` - boolean, embed response body into a meta object. default: false
-* `enableResponseObject` - boolean,like `enableMeta`, plus the response object. default: false
+* `responseType`
+  * Default: `'application/json'`
+  * Custom `'Accept'` header
+* `mergeHeaders`
+  * Type: plain object
+  * Default: null
+  * Merge some response headers into the JSON object reponse
+  * Example: `{ poweredBy: 'X-Powered-By' }`
+* `filterHeaders`
+  * Type: plain object
+  * Default: null
+  * Pick some response headers.
+  * Example: `{ 'X-Powered-By': true }` or `{ 'x-powered-by': true }`
+* `timeout`
+  * Millisecond
+* `enableCookies`
+  * Type: Boolean
+  * Default: false
+  * Automatically send cookies
+* `disableCORS`
+  * Type: Boolean
+  * Default: false
+* `disableRemoteError`
+  * Type: Boolean
+  * Default: false
+  * Disable the "REMOTE ERROR" which is triggered by the JSON response with nonzero exit status
+* `enableMeta`
+  * Type: Boolean
+  * Default: false
+  * Embed response body into a meta object
+* `enableResponseObject`
+  * Type: Boolean
+  * Default: false
+  * Like `enableMeta`, plus the response object
 
 #### Hooks
 
-* `validateStatus` - custom validator for acceptable HTTP response status code, default: `status >= 200 && status < 300`
-* `parser` - default: `response => response.json()`
-* `handler` - custom validator and processor for response data
-* `success` - default: `res => res`
-* `error` - default: `res => Promise.reject(res)`
+* `validateStatus`
+  * Default: `status >= 200 && status < 300`
+  * Custom validator for acceptable HTTP response status code
+* `parser`
+  * Default: `response => response.json()`
+* `handler`
+  * Custom validator and processor for response data
+* `success`
+  * Default: `res => res`
+* `error`
+  * Default: `res => Promise.reject(res)`
 
 ### Actions
 
-* `send()` - return promise; automatically nterrupt latest outstanding request each time it's called
-* `cancel()` - interrupt latest outstanding request, nothing happen
-* `error()` - interrupt latest outstanding request, trigger error callback
+* `send()`
+  * Return: Promise
+  * Automatically nterrupt latest outstanding request each time it's called
+* `cancel()`
+  * Interrupt latest outstanding request, nothing happen
+* `error()`
+  * Interrupt latest outstanding request, trigger error callback
 
 See [actions.spec.js](https://github.com/dexteryy/hifetch/blob/master/tests/actions.spec.js) for more detail.
 
