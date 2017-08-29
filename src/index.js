@@ -62,7 +62,7 @@ class Hifetch {
     this._queryString = query ? qs.stringify(query) : '';
     const fetchOpt = this._fetchOpt = {};
     if (disableCORS) {
-      fetchOpt.mode = 'cors';
+      fetchOpt.mode = 'no-cors';
     }
     if (enableCookies) {
       fetchOpt.credentials = disableCORS ? 'same-origin' : 'include';
