@@ -2,13 +2,10 @@
 import { expect } from 'chai';
 import nock from 'nock';
 import hifetch from '../dist';
-import {
-  ROOT,
-} from './utils';
+import { ROOT } from './utils';
 
-describe('error: 4', function () {
-
-  it('from handler, promise style', function (done) {
+describe('error: 4', () => {
+  it('from handler, promise style', done => {
     nock(ROOT)
       .defaultReplyHeaders({
         'X-Powered-By': 'nock',
@@ -31,16 +28,18 @@ describe('error: 4', function () {
       expect(res.httpStatus).to.equal(200);
       expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
-    hifetch(fetchConfig).send()
+    hifetch(fetchConfig)
+      .send()
       .catch(errorHandler)
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('from handler, callback style', function (done) {
+  it('from handler, callback style', done => {
     nock(ROOT)
       .defaultReplyHeaders({
         'X-Powered-By': 'nock',
@@ -63,17 +62,21 @@ describe('error: 4', function () {
       expect(res.httpStatus).to.equal(200);
       expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
-    hifetch(Object.assign({}, fetchConfig, {
-      error: errorHandler,
-    })).send()
+    hifetch(
+      Object.assign({}, fetchConfig, {
+        error: errorHandler,
+      }),
+    )
+      .send()
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('from success, promise style', function (done) {
+  it('from success, promise style', done => {
     nock(ROOT)
       .defaultReplyHeaders({
         'X-Powered-By': 'nock',
@@ -96,18 +99,22 @@ describe('error: 4', function () {
       expect(res.httpStatus).to.equal(200);
       expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
-    hifetch(Object.assign({}, fetchConfig, {
-      success: successHandler,
-    })).send()
+    hifetch(
+      Object.assign({}, fetchConfig, {
+        success: successHandler,
+      }),
+    )
+      .send()
       .catch(errorHandler)
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('from success, callback style', function (done) {
+  it('from success, callback style', done => {
     nock(ROOT)
       .defaultReplyHeaders({
         'X-Powered-By': 'nock',
@@ -130,15 +137,18 @@ describe('error: 4', function () {
       expect(res.httpStatus).to.equal(200);
       expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
-    hifetch(Object.assign({}, fetchConfig, {
-      success: successHandler,
-      error: errorHandler,
-    })).send()
+    hifetch(
+      Object.assign({}, fetchConfig, {
+        success: successHandler,
+        error: errorHandler,
+      }),
+    )
+      .send()
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
-
 });

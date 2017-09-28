@@ -2,13 +2,10 @@
 import { expect } from 'chai';
 import nock from 'nock';
 import hifetch from '../dist';
-import {
-  ROOT,
-} from './utils';
+import { ROOT } from './utils';
 
-describe('actions', function () {
-
-  it('cancel()', function (done) {
+describe('actions', () => {
+  it('cancel()', done => {
     let isSuccess = false;
     let isError = false;
     nock(ROOT)
@@ -33,14 +30,17 @@ describe('actions', function () {
       expect(new Date().getTime() - startTime).to.be.above(300);
       done();
     }
-    req.send().then(fetchDone).catch(fetchDone);
+    req
+      .send()
+      .then(fetchDone)
+      .catch(fetchDone);
     setTimeout(() => {
       req.cancel();
     }, 100);
     setTimeout(fetchDone, 300);
   });
 
-  it('error()', function (done) {
+  it('error()', done => {
     let isSuccess = false;
     let isError = false;
     nock(ROOT)
@@ -68,11 +68,13 @@ describe('actions', function () {
       expect(new Date().getTime() - startTime).to.be.above(300);
       done();
     }
-    req.send().then(fetchDone).catch(fetchDone);
+    req
+      .send()
+      .then(fetchDone)
+      .catch(fetchDone);
     setTimeout(() => {
       req.error(new Error('test'));
     }, 100);
     setTimeout(fetchDone, 300);
   });
-
 });

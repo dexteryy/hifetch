@@ -2,20 +2,19 @@
 import { expect } from 'chai';
 import nock from 'nock';
 import hifetch from '../dist';
-import {
-  ROOT,
-} from './utils';
+import { ROOT } from './utils';
 
-describe('delete', function () {
-
-  it('user1', function (done) {
+describe('delete', () => {
+  it('user1', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).delete('/user')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .delete('/user')
       .query({
         uid: 1,
       })
@@ -34,14 +33,15 @@ describe('delete', function () {
       mergeHeaders: {
         poweredBy: 'X-Powered-By',
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.name).to.equal('user1');
         expect(res.poweredBy).to.equal('nock');
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
-
 });

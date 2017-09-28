@@ -2,13 +2,10 @@
 import { expect } from 'chai';
 import nock from 'nock';
 import hifetch from '../dist';
-import {
-  ROOT,
-} from './utils';
+import { ROOT } from './utils';
 
-describe('error: 2', function () {
-
-  it('promise style', function (done) {
+describe('error: 2', () => {
+  it('promise style', done => {
     nock(ROOT)
       .get('/error2')
       .reply(500, {
@@ -21,16 +18,18 @@ describe('error: 2', function () {
       expect(res.status).to.equal(2);
       expect(res.httpStatus).to.equal(500);
     };
-    hifetch(fetchConfig).send()
+    hifetch(fetchConfig)
+      .send()
       .catch(errorHandler)
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('callback style', function (done) {
+  it('callback style', done => {
     nock(ROOT)
       .get('/error2')
       .reply(500, {
@@ -43,14 +42,17 @@ describe('error: 2', function () {
       expect(res.status).to.equal(2);
       expect(res.httpStatus).to.equal(500);
     };
-    hifetch(Object.assign({}, fetchConfig, {
-      error: errorHandler,
-    })).send()
+    hifetch(
+      Object.assign({}, fetchConfig, {
+        error: errorHandler,
+      }),
+    )
+      .send()
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
-
 });

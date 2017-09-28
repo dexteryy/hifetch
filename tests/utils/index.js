@@ -1,4 +1,3 @@
-
 export const HOST = 'http://www.mydomain.com';
 export const PORT = 8056;
 export const ROOT = `${HOST}:${PORT}`;

@@ -2,13 +2,10 @@
 import { expect } from 'chai';
 import nock from 'nock';
 import hifetch from '../dist';
-import {
-  ROOT,
-} from './utils';
+import { ROOT } from './utils';
 
-describe('error: 3', function () {
-
-  it('promise style', function (done) {
+describe('error: 3', () => {
+  it('promise style', done => {
     nock(ROOT)
       .defaultReplyHeaders({
         'X-Powered-By': 'nock',
@@ -31,16 +28,18 @@ describe('error: 3', function () {
       expect(res.httpStatus).to.equal(200);
       expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
-    hifetch(fetchConfig).send()
+    hifetch(fetchConfig)
+      .send()
       .catch(errorHandler)
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('callback style', function (done) {
+  it('callback style', done => {
     nock(ROOT)
       .defaultReplyHeaders({
         'X-Powered-By': 'nock',
@@ -63,14 +62,17 @@ describe('error: 3', function () {
       expect(res.httpStatus).to.equal(200);
       expect(res.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
     };
-    hifetch(Object.assign({}, fetchConfig, {
-      error: errorHandler,
-    })).send()
+    hifetch(
+      Object.assign({}, fetchConfig, {
+        error: errorHandler,
+      }),
+    )
+      .send()
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
-
 });

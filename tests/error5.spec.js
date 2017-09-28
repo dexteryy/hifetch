@@ -2,13 +2,10 @@
 import { expect } from 'chai';
 import nock from 'nock';
 import hifetch from '../dist';
-import {
-  ROOT,
-} from './utils';
+import { ROOT } from './utils';
 
-describe('error: 5', function () {
-
-  it('timeout, promise style', function (done) {
+describe('error: 5', () => {
+  it('timeout, promise style', done => {
     nock(ROOT)
       .get('/error5')
       .delayConnection(200)
@@ -24,16 +21,18 @@ describe('error: 5', function () {
       expect(res.timeout).to.equal(100);
       return res;
     };
-    hifetch(fetchConfig).send()
+    hifetch(fetchConfig)
+      .send()
       .catch(errorHandler)
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('timeout, callback style', function (done) {
+  it('timeout, callback style', done => {
     nock(ROOT)
       .get('/error5')
       .delayConnection(200)
@@ -49,17 +48,21 @@ describe('error: 5', function () {
       expect(res.timeout).to.equal(100);
       return res;
     };
-    hifetch(Object.assign({}, fetchConfig, {
-      error: errorHandler,
-    })).send()
+    hifetch(
+      Object.assign({}, fetchConfig, {
+        error: errorHandler,
+      }),
+    )
+      .send()
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('no timeout, promise style', function (done) {
+  it('no timeout, promise style', done => {
     nock(ROOT)
       .get('/error5')
       .delayConnection(200)
@@ -73,16 +76,18 @@ describe('error: 5', function () {
     const successHandler = res => {
       expect(res.status).to.equal(0);
     };
-    hifetch(fetchConfig).send()
+    hifetch(fetchConfig)
+      .send()
       .then(successHandler)
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('no timeout, callback style', function (done) {
+  it('no timeout, callback style', done => {
     nock(ROOT)
       .get('/error5')
       .delayConnection(200)
@@ -96,14 +101,17 @@ describe('error: 5', function () {
     const successHandler = res => {
       expect(res.status).to.equal(0);
     };
-    hifetch(Object.assign({}, fetchConfig, {
-      success: successHandler,
-    })).send()
+    hifetch(
+      Object.assign({}, fetchConfig, {
+        success: successHandler,
+      }),
+    )
+      .send()
       .then(() => {
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
-
 });

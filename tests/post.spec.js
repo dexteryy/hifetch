@@ -1,37 +1,35 @@
 /* eslint no-unused-expressions: 0 */
+import fs from 'fs';
+import path from 'path';
 import { expect } from 'chai';
 import nock from 'nock';
 import qs from 'qs';
-import fs from 'fs';
-import path from 'path';
 import FormData from 'form-data';
 import hifetch from '../dist';
-import {
-  ROOT,
-  checkFormData,
-} from './utils';
+import { ROOT, checkFormData } from './utils';
 
 const logoFile = path.join(__dirname, '../../tests', 'assets/logo.png');
 
-describe('post', function () {
-
-  it('user3, by urlencoded', function (done) {
+describe('post', () => {
+  it('user3, by urlencoded', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
         'Content-Type': /application\/x-www-form-urlencoded/,
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).post('/user')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .post('/user')
       .query({
         uid: 3,
       })
-      .reply(200, function (uri, requestBody) {
-        return Object.assign(qs.parse(requestBody), {
+      .reply(200, (uri, requestBody) =>
+        Object.assign(qs.parse(requestBody), {
           status: 0,
-        });
-      });
+        }),
+      );
     hifetch({
       url: `${ROOT}/user`,
       method: 'post',
@@ -47,32 +45,35 @@ describe('post', function () {
       mergeHeaders: {
         poweredBy: 'X-Powered-By',
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.name).to.equal('user3');
         expect(res.status).to.equal(0);
         expect(res.poweredBy).to.equal('nock');
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user4, by JSON', function (done) {
+  it('user4, by JSON', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
         'Content-Type': /json/,
       },
-    }).post('/user')
+    })
+      .post('/user')
       .query({
         uid: 4,
       })
-      .reply(200, function (uri, requestBody) {
-        return Object.assign(requestBody, {
+      .reply(200, (uri, requestBody) =>
+        Object.assign(requestBody, {
           status: 0,
-        });
-      });
+        }),
+      );
     hifetch({
       url: `${ROOT}/user`,
       method: 'post',
@@ -86,27 +87,30 @@ describe('post', function () {
       data: {
         name: 'user4',
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.name).to.equal('user4');
         expect(res.status).to.equal(0);
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user5, by FormData', function (done) {
+  it('user5, by FormData', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
         'Content-Type': /multipart\/form-data;\s*boundary=/,
       },
-    }).post('/user')
+    })
+      .post('/user')
       .query({
         uid: 5,
       })
-      .reply(200, function (uri, requestBody) {
+      .reply(200, (uri, requestBody) => {
         const body = Buffer.from(requestBody, 'hex').toString();
         return {
           status: 0,
@@ -126,7 +130,8 @@ describe('post', function () {
       },
       data: formData,
       FormData,
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.status).to.equal(0);
         checkFormData(res.body, {
@@ -135,22 +140,24 @@ describe('post', function () {
           },
         });
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user6, by form-data', function (done) {
+  it('user6, by form-data', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
         'Content-Type': /multipart\/form-data;\s*boundary=/,
       },
-    }).post('/user')
+    })
+      .post('/user')
       .query({
         uid: 6,
       })
-      .reply(200, function (uri, requestBody) {
+      .reply(200, (uri, requestBody) => {
         const body = Buffer.from(requestBody, 'hex').toString();
         return {
           status: 0,
@@ -171,7 +178,8 @@ describe('post', function () {
       },
       dataType: 'form',
       FormData,
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.status).to.equal(0);
         checkFormData(res.body, {
@@ -180,22 +188,24 @@ describe('post', function () {
           },
         });
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user7, by files', function (done) {
+  it('user7, by files', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
         'Content-Type': /multipart\/form-data;\s*boundary=/,
       },
-    }).post('/user')
+    })
+      .post('/user')
       .query({
         uid: 7,
       })
-      .reply(200, function (uri, requestBody) {
+      .reply(200, (uri, requestBody) => {
         const body = Buffer.from(requestBody, 'hex').toString();
         return {
           status: 0,
@@ -217,7 +227,8 @@ describe('post', function () {
       },
       dataType: 'form',
       FormData,
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.status).to.equal(0);
         checkFormData(res.body, {
@@ -229,22 +240,24 @@ describe('post', function () {
           },
         });
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user8, by FormData and files', function (done) {
+  it('user8, by FormData and files', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
         'Content-Type': /multipart\/form-data;\s*boundary=/,
       },
-    }).post('/user')
+    })
+      .post('/user')
       .query({
         uid: 8,
       })
-      .reply(200, function (uri, requestBody) {
+      .reply(200, (uri, requestBody) => {
         const body = Buffer.from(requestBody, 'hex').toString();
         return {
           status: 0,
@@ -267,7 +280,8 @@ describe('post', function () {
       },
       data: formData,
       FormData,
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.status).to.equal(0);
         checkFormData(res.body, {
@@ -281,9 +295,9 @@ describe('post', function () {
         });
         expect(fileCount).to.equal(2);
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
-
 });

@@ -1,4 +1,4 @@
-
+/* eslint-disable filenames/match-exported */
 import 'isomorphic-fetch';
 import qs from 'qs';
 
@@ -11,7 +11,6 @@ const mimeLib = {
 };
 
 class Hifetch {
-
   static defaultConfig = {
     url: '',
     method: 'get',
@@ -37,7 +36,7 @@ class Hifetch {
       return response.json();
     },
     handler(data, headersForMerge) {
-      return (typeof data !== 'string' && !Array.isArray(data))
+      return typeof data !== 'string' && !Array.isArray(data)
         ? Object.assign(headersForMerge, data)
         : data;
     },
@@ -60,8 +59,9 @@ class Hifetch {
       disableCORS,
     } = this._config;
     this._queryString = query ? qs.stringify(query) : '';
-    const fetchOpt = this._fetchOpt = {};
-    if (disableCORS) {
+    const fetchOpt = {};
+    this._fetchOpt = fetchOpt;
+    if (!disableCORS) {
       fetchOpt.mode = 'cors';
     }
     if (enableCookies) {
@@ -71,7 +71,7 @@ class Hifetch {
       Accept: /\//.test(responseType) ? responseType : mimeLib[responseType],
     };
     if (jwtToken) {
-      moreHeaders['Authorization'] = `Bearer ${jwtToken}`;
+      moreHeaders.Authorization = `Bearer ${jwtToken}`;
     }
     let dataType;
     let dataForBody = data;
@@ -81,14 +81,17 @@ class Hifetch {
       });
     };
     if (data) {
-      dataType = (/\//.test(originDataType)
-        ? originDataType
-        : mimeLib[originDataType]) || Hifetch.defaultConfig.dataType;
+      dataType =
+        (/\//.test(originDataType)
+          ? originDataType
+          : mimeLib[originDataType]) || Hifetch.defaultConfig.dataType;
       if (typeof data === 'object') {
-        if (FormData && (data instanceof FormData)) {
+        if (FormData && data instanceof FormData) {
           dataType = mimeLib.form;
         } else if (data.constructor !== Object) {
-          throw new Error('hifetch: `data` must be a plain object, FormData object or string');
+          throw new Error(
+            'hifetch: `data` must be a plain object, FormData object or string',
+          );
         } else if (dataType === mimeLib.form) {
           dataForBody = new FormData();
           mergeToForm(data);
@@ -99,22 +102,30 @@ class Hifetch {
         }
       }
     }
-    Object.assign(fetchOpt, {
-      method: method.toUpperCase(),
-      headers: Object.assign(
-        {},
-        headers,
-        moreHeaders,
-        (!dataType || dataType === mimeLib.form) ? {
-          // leave Content-Type' field empty, Fetch APi will automatically create:
-          // Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryyEmKNDsBKjB7QEqu
-        } : {
-          'Content-Type': dataType,
-        },
-      ),
-    }, data ? {
-      body: dataForBody,
-    } : {});
+    Object.assign(
+      fetchOpt,
+      {
+        method: method.toUpperCase(),
+        headers: Object.assign(
+          {},
+          headers,
+          moreHeaders,
+          !dataType || dataType === mimeLib.form
+            ? {
+                // leave Content-Type' field empty, Fetch APi will automatically create:
+                // Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryyEmKNDsBKjB7QEqu
+              }
+            : {
+                'Content-Type': dataType,
+              },
+        ),
+      },
+      data
+        ? {
+            body: dataForBody,
+          }
+        : {},
+    );
   }
 
   send() {
@@ -132,7 +143,8 @@ class Hifetch {
       success,
       error,
     } = this._config;
-    const current = this._current = uuid();
+    const current = uuid();
+    this._current = current;
     let _filterHeaders;
     if (filterHeaders) {
       _filterHeaders = {};
@@ -144,154 +156,162 @@ class Hifetch {
       if (timeout) {
         setTimeout(() => {
           if (current === this._current) {
-            reject('timeout');
+            reject(new Error('TIMEOUT'));
           }
         }, timeout);
       }
       return fetch(
         this._queryString ? `${url}?${this._queryString}` : url,
         this._fetchOpt,
-      ).then(res => {
-        if (current === this._current) {
-          resolve(res);
-        }
-      }).catch(res => {
-        if (current === this._current) {
-          reject(res);
-        }
-      });
-    }).then(response => {
-      try {
-        if (validateStatus(response.status)) {
-          return response;
-        }
-      } catch (e) {
-        return error({
-          status: 4,
-          message: `[CUSTOM JS ERROR] ${clearErrorMessage(e)}`,
-          error: e,
+      )
+        .then(res => {
+          if (current === this._current) {
+            resolve(res);
+          }
+        })
+        .catch(res => {
+          if (current === this._current) {
+            reject(res);
+          }
         });
-      }
-      const err = new Error(response.statusText);
-      err.response = response;
-      throw err;
-    }).then(response => {
-      const headersForMerge = {};
-      Object.keys(mergeHeaders).forEach(key => {
-        const header = mergeHeaders[key];
-        if (header) {
-          headersForMerge[key] = response.headers.get(header);
+    })
+      .then(response => {
+        try {
+          if (validateStatus(response.status)) {
+            return response;
+          }
+        } catch (e) {
+          return error({
+            status: 4,
+            message: `[CUSTOM JS ERROR] ${clearErrorMessage(e)}`,
+            error: e,
+          });
         }
-      });
-      const withHeaders = (data) => {
-        const {
-          status,
-          statusText,
-          url,
-          headers,
-        } = response;
-        const allHeaders = {};
-        let headerEntries = [];
-        if (headers._headers) {
-          headerEntries = Object.keys(headers._headers)
-            .map(key => ([
+        const err = new Error(response.statusText);
+        err.response = response;
+        throw err;
+      })
+      .then(response => {
+        const headersForMerge = {};
+        Object.keys(mergeHeaders).forEach(key => {
+          const header = mergeHeaders[key];
+          if (header) {
+            headersForMerge[key] = response.headers.get(header);
+          }
+        });
+        const withHeaders = data => {
+          const { status, statusText, url: resUrl, headers } = response;
+          const allHeaders = {};
+          let headerEntries = [];
+          if (headers._headers) {
+            headerEntries = Object.keys(headers._headers).map(key => [
               key,
               headers._headers[key].join('; '),
-            ]));
-        } else if (headers.entries) {
-          headerEntries = headers.entries();
-        }
-        for (const i of headerEntries) {
-          if (i && i[0]
-              && (!_filterHeaders || _filterHeaders[i[0]])) {
-            allHeaders[i[0]] = i[1];
+            ]);
+          } else if (headers.entries) {
+            headerEntries = headers.entries();
           }
-        }
-        const meta = {
-          status: 0,
-          httpStatus: status,
-          httpStatusText: statusText,
-          url,
-          headers: allHeaders,
+          for (const i of headerEntries) {
+            if (i && i[0] && (!_filterHeaders || _filterHeaders[i[0]])) {
+              allHeaders[i[0]] = i[1];
+            }
+          }
+          const meta = {
+            status: 0,
+            httpStatus: status,
+            httpStatusText: statusText,
+            url: resUrl,
+            headers: allHeaders,
+          };
+          if (enableResponseObject) {
+            meta.response = response;
+          }
+          return {
+            data,
+            headersForMerge,
+            meta,
+          };
         };
-        if (enableResponseObject) {
-          meta.response = response;
+        let parsed;
+        try {
+          parsed = parser(response);
+        } catch (err) {
+          return error({
+            status: 4,
+            message: `[CUSTOM JS ERROR] ${clearErrorMessage(err)}`,
+            error: err,
+          });
         }
-        return {
-          data,
-          headersForMerge,
-          meta,
-        };
-      };
-      let parsed;
-      try {
-        parsed = parser(response);
-      } catch (err) {
+        if (parsed.then) {
+          /* eslint-disable promise/no-nesting */
+          return parsed.then(withHeaders);
+          /* eslint-enable promise/no-nesting */
+        }
+        return withHeaders(parsed);
+      })
+      .then(({ data, headersForMerge, meta }) => {
+        try {
+          const result = handler(data, headersForMerge, meta);
+          if (
+            !disableRemoteError &&
+            typeof result === 'object' &&
+            result.status
+          ) {
+            return error(
+              Object.assign({}, meta, {
+                status: 3,
+                message: `[REMOTE ERROR] status: ${data.status} message: ${data.message}`,
+                data: result,
+              }),
+            );
+          }
+          return success(
+            enableResponseObject || enableMeta
+              ? Object.assign(
+                  {
+                    data: result,
+                  },
+                  meta,
+                )
+              : result,
+          );
+        } catch (err) {
+          return error(
+            Object.assign({}, meta, {
+              status: 4,
+              message: `[CUSTOM JS ERROR] ${clearErrorMessage(err)}`,
+              error: err,
+            }),
+          );
+        }
+      })
+      .catch(err => {
+        if (typeof err === 'object' && err.message === 'TIMEOUT') {
+          return error({
+            status: 5,
+            message: `[TIMEOUT ERROR] limit: ${timeout / 1000}s`,
+            timeout,
+          });
+        }
+        if (err.status) {
+          return error(err);
+        }
+        const { status: httpStatus, statusText: httpStatusText } =
+          err.response || {};
+        if (httpStatus) {
+          return error({
+            status: 2,
+            message: `[FETCH ERROR] ${httpStatus} ${httpStatusText}`,
+            httpStatus,
+            httpStatusText,
+          });
+        }
         return error({
-          status: 4,
-          message: `[CUSTOM JS ERROR] ${clearErrorMessage(err)}`,
+          status: 1,
+          message: `[INTERNAL JS ERROR] ${clearErrorMessage(err)}`,
           error: err,
         });
-      }
-      if (parsed.then) {
-        return parsed.then(withHeaders);
-      }
-      return withHeaders(parsed);
-    }).then(({
-      data,
-      headersForMerge,
-      meta,
-    }) => {
-      try {
-        const result = handler(data, headersForMerge, meta);
-        if (!disableRemoteError && typeof result === 'object' && result.status) {
-          return error(Object.assign({}, meta, {
-            status: 3,
-            message: `[REMOTE ERROR] status: ${data.status} message: ${data.message}`,
-            data: result,
-          }));
-        }
-        return success(enableResponseObject || enableMeta
-          ? Object.assign({
-            data: result,
-          }, meta)
-          : result);
-      } catch (err) {
-        return error(Object.assign({}, meta, {
-          status: 4,
-          message: `[CUSTOM JS ERROR] ${clearErrorMessage(err)}`,
-          error: err,
-        }));
-      }
-    }).catch(err => {
-      if (err === 'timeout') {
-        return error({
-          status: 5,
-          message: `[TIMEOUT ERROR] limit: ${timeout / 1000}s`,
-          timeout,
-        });
-      }
-      if (err.status) {
-        return error(err);
-      }
-      const {
-        status: httpStatus,
-        statusText: httpStatusText,
-      } = err.response || {};
-      if (httpStatus) {
-        return error({
-          status: 2,
-          message: `[FETCH ERROR] ${httpStatus} ${httpStatusText}`,
-          httpStatus,
-          httpStatusText,
-        });
-      }
-      return error({
-        status: 1,
-        message: `[INTERNAL JS ERROR] ${clearErrorMessage(err)}`,
-        error: err,
       });
-    });
   }
 
   cancel() {
@@ -299,9 +319,7 @@ class Hifetch {
   }
 
   error(customError) {
-    const {
-      error,
-    } = this._config;
+    const { error } = this._config;
     this._current = null;
     return error({
       status: 6,
@@ -309,7 +327,6 @@ class Hifetch {
       customError,
     });
   }
-
 }
 
 function uuid() {
@@ -327,3 +344,5 @@ function hifetch(opt) {
 hifetch.Class = Hifetch;
 
 export default hifetch;
+
+/* eslint-enable filenames/match-exported */

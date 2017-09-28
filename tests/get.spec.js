@@ -2,20 +2,19 @@
 import { expect } from 'chai';
 import nock from 'nock';
 import hifetch from '../dist';
-import {
-  ROOT,
-} from './utils';
+import { ROOT } from './utils';
 
-describe('get', function () {
-
-  it('user1, promise style', function (done) {
+describe('get', () => {
+  it('user1, promise style', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/user')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/user')
       .query({
         uid: 1,
       })
@@ -33,24 +32,28 @@ describe('get', function () {
       mergeHeaders: {
         poweredBy: 'X-Powered-By',
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.name).to.equal('user1');
         expect(res.poweredBy).to.equal('nock');
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user1, promise style, enableMeta', function (done) {
+  it('user1, promise style, enableMeta', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/user')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/user')
       .query({
         uid: 1,
       })
@@ -69,7 +72,8 @@ describe('get', function () {
         poweredBy: 'X-Powered-By',
       },
       enableMeta: true,
-    }).send()
+    })
+      .send()
       .then(meta => {
         expect(meta.data.name).to.equal('user1');
         expect(meta.data.poweredBy).to.equal('nock');
@@ -78,19 +82,22 @@ describe('get', function () {
         expect(meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
         expect(meta.headers['content-type']).to.exist;
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user1, callback style', function (done) {
+  it('user1, callback style', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/user')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/user')
       .query({
         uid: 1,
       })
@@ -113,24 +120,28 @@ describe('get', function () {
         expect(res.poweredBy).to.equal('nock');
         return res;
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.name).to.equal('user1');
         expect(res.poweredBy).to.equal('nock');
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user1, callback style, enableMeta', function (done) {
+  it('user1, callback style, enableMeta', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/user')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/user')
       .query({
         uid: 1,
       })
@@ -158,7 +169,8 @@ describe('get', function () {
         expect(meta.headers['content-type']).to.exist;
         return meta;
       },
-    }).send()
+    })
+      .send()
       .then(meta => {
         expect(meta.data.name).to.equal('user1');
         expect(meta.data.poweredBy).to.equal('nock');
@@ -167,17 +179,19 @@ describe('get', function () {
         expect(meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
         expect(meta.headers['content-type']).to.exist;
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('user2', function (done) {
+  it('user2', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).get('/user')
+    })
+      .get('/user')
       .query({
         uid: 2,
       })
@@ -196,23 +210,27 @@ describe('get', function () {
         expect(res.name).to.equal('user2');
         return res;
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res.name).to.equal('user2');
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('text', function (done) {
+  it('text', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/text')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/text')
       .reply(200, 'some text');
     hifetch({
       url: `${ROOT}/text`,
@@ -223,23 +241,27 @@ describe('get', function () {
       mergeHeaders: {
         poweredBy: 'X-Powered-By',
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res).to.equal('some text');
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('text, enableMeta', function (done) {
+  it('text, enableMeta', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/text')
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/text')
       .reply(200, 'some text');
     hifetch({
       url: `${ROOT}/text`,
@@ -251,31 +273,38 @@ describe('get', function () {
         poweredBy: 'X-Powered-By',
       },
       enableMeta: true,
-    }).send()
+    })
+      .send()
       .then(meta => {
         expect(meta.data).to.equal('some text');
         expect(meta.status).to.equal(0);
         expect(meta.httpStatus).to.equal(200);
         expect(meta.headers['X-Powered-By'.toLowerCase()]).to.equal('nock');
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('array', function (done) {
+  it('array', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/users')
-      .reply(200, [{
-        name: 'user1',
-      }, {
-        name: 'user2',
-      }]);
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/users')
+      .reply(200, [
+        {
+          name: 'user1',
+        },
+        {
+          name: 'user2',
+        },
+      ]);
     hifetch({
       url: `${ROOT}/users`,
       headers: {
@@ -284,30 +313,37 @@ describe('get', function () {
       mergeHeaders: {
         poweredBy: 'X-Powered-By',
       },
-    }).send()
+    })
+      .send()
       .then(res => {
         expect(res).to.be.an('array');
         expect(res[0].name).to.equal('user1');
         expect(res.poweredBy).to.not.exist;
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
 
-  it('array, enableMeta', function (done) {
+  it('array, enableMeta', done => {
     nock(ROOT, {
       reqheaders: {
         'X-My-Headers': '1',
       },
-    }).defaultReplyHeaders({
-      'X-Powered-By': 'nock',
-    }).get('/users')
-      .reply(200, [{
-        name: 'user1',
-      }, {
-        name: 'user2',
-      }]);
+    })
+      .defaultReplyHeaders({
+        'X-Powered-By': 'nock',
+      })
+      .get('/users')
+      .reply(200, [
+        {
+          name: 'user1',
+        },
+        {
+          name: 'user2',
+        },
+      ]);
     hifetch({
       url: `${ROOT}/users`,
       headers: {
@@ -320,7 +356,8 @@ describe('get', function () {
         'X-Powered-By': true,
       },
       enableMeta: true,
-    }).send()
+    })
+      .send()
       .then(meta => {
         expect(meta.data).to.be.an('array');
         expect(meta.data[0].name).to.equal('user1');
@@ -330,9 +367,9 @@ describe('get', function () {
         expect(meta.headers['content-type']).to.not.exist;
         expect(meta.poweredBy).to.not.exist;
         done();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
   });
-
 });
